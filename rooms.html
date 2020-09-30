@@ -1,0 +1,55 @@
+<template id="az-embed">
+    <div class="form-control" id="azioni" @change="onChange($event)" style="margin: 0px 0px 9px 0px;">
+        <select style="height: 26px;
+                       border-radius: 4px;
+                        border: 1px solid #33353500;
+                        font-family: saira,sans-serif;
+                        font-weight: 600;
+                        cursor: pointer;
+                        color: #333535;
+                        text-transform: capitalize;
+                        background-color: #f5f5f5;">
+            <option value="#vingtaine">#vingtaine</option>
+            <option value="#trentaine">#trentaine</option>
+            <option value="#quebec">#quebec</option>
+			<option value="#family-radio">#family-radio</option>
+			<option value="#jeux">#Jeux</option>
+			<option value="#informatique">#informatique</option>
+            <option value="" selected="selected" disabled="disabled">-------- Salons officiels -------</option>
+          </select>
+    </div>
+</template>
+
+<script>
+kiwi.plugin('azioni', function(kiwi, log) {
+    console.log('Azioni plugin loaded.');
+
+    var azEmbedded = new kiwi.Vue({
+        template: '#az-embed',
+        methods: {
+            onChange(event) {
+                kiwi.emit('input.raw', '/RAW JOIN ' + event.target.value);
+
+                // Give the user the feedback
+                var mynick = kiwi.state.getActiveNetwork().nick;
+                    var buffer = kiwi.state.getActiveBuffer();
+                    var channel = event.target.value.substr(0, event.target.value.indexOf(' '));
+                    kiwi.state.addMessage(buffer,
+                        {
+                            'message': 'Nos autres salons sont aussi visibles en tapant ' + channel + ' /list !',
+                            'bodyTemplate': '',
+                            'nick': 'INFO',
+                            'ident': 'INFO',
+                            'hostname': 'INFO',
+                            'target': mynick,
+                        }
+                    );
+            }
+        },
+    });
+
+    azEmbedded.$mount();
+    // we have only fixed points to mount: https://github.com/kiwiirc/kiwiirc/blob/master/src/libs/GlobalApi.js#L149
+    kiwi.addUi('browser', azEmbedded.$el);
+});
+</script>
